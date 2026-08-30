@@ -17,7 +17,6 @@ import random
 
 import traceback
 
-# Selenium / undetected chrome
 try:
     import undetected_chromedriver as uc
     from selenium.common.exceptions import WebDriverException
@@ -25,7 +24,6 @@ except Exception:
     uc = None
     WebDriverException = Exception
 
-# Optional selenium-wire for reliable outgoing request capture
 try:
     from seleniumwire import webdriver as sw_webdriver
     SELENIUM_WIRE_AVAILABLE = True
@@ -40,7 +38,6 @@ except Exception:
     SocketIO = None
 
 
-# ================= CONFIGURATION =================
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -50,10 +47,6 @@ MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
 MONGO_URI_ATLAS = os.getenv("MONGO_URI_ATLAS", "")
 DB_NAME = os.getenv("MONGO_DB_NAME", "spotify_friends")
 COLLECTION_NAME = os.getenv("MONGO_COLLECTION", "friends_activity")
-
-SPOTIFY_GROUP_NAME = "Spoti-Friend-Logger"
-API_PORT = int(os.getenv("WHATSAPP_API_PORT", "3939"))
-WHATSAPP_API_URL = os.getenv("WHATSAPP_API_URL", f"http://localhost:{API_PORT}/spotify")
 
 FLASK_HOST = os.getenv("FLASK_HOST", "0.0.0.0")
 FLASK_PORT = int(os.getenv("FLASK_PORT", "5000"))
