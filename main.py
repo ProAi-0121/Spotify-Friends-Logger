@@ -61,6 +61,9 @@ FLASK_PORT = int(os.getenv("FLASK_PORT", "5000"))
 # default interval (seconds) if config missing
 ACTIVITY_INTERVAL = int(os.getenv("ACTIVITY_INTERVAL", "60"))
 
+# Spotify internal endpoint used to read friend activity
+SPOTIFY_BUDDYLIST_URL = "https://guc-spclient.spotify.com/presence-view/v1/buddylist"
+
 
 # ================= TRAY / UI =================
 import pystray
@@ -1333,7 +1336,7 @@ fetch(url, {method: 'GET', headers: headers, credentials: 'include'})
                 headers['client-token'] = cfg.get('client_token')
             raw = None
             try:
-                raw = driver.execute_async_script(fetch_script, 'https://guc-spclient.spotify.com/presence-view/v1/buddylist', headers)
+                raw = driver.execute_async_script(fetch_script, SPOTIFY_BUDDYLIST_URL, headers)
             except Exception as e:
                 print('[Spotify] ⚠️ browser fetch error during refresh:', e)
                 raw = None
@@ -1398,7 +1401,7 @@ fetch(url, {method: 'GET', headers: headers, credentials: 'include'})
 
 def fetch_buddylist_and_store(cfg, driver=None):
     print('[Spotify] Fetching Friend Activity...')
-    url = 'https://guc-spclient.spotify.com/presence-view/v1/buddylist'
+    url = SPOTIFY_BUDDYLIST_URL
     cfg['last_fetch'] = time.time()
     save_config(cfg)
 
