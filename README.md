@@ -6,16 +6,19 @@ It ships with a companion desktop script (`live_notifications.py`) that turns ne
 
 ## Images/Features (spicetify Extension)
 
-1. Button near the Search Bar
-![alt text](image.png)
+### 1. Button near the Search Bar
+<img width="999" height="145" alt="image" src="https://github.com/user-attachments/assets/8ae0e504-44c9-4749-bb16-e45ad2c67d4a" />
 
-2. Friends Menu (Opens after clicking on the button)
-![alt text](image-1.png)
 
-3. Friends Playing History (Opens After clicking on any Friend's Profile)
-![alt text](image-2.png)
+### 2. Friends Menu (Opens after clicking on the button)
+<img width="2559" height="1393" alt="image-1" src="https://github.com/user-attachments/assets/18fb03e4-3873-4da3-af92-1b8f9ab03e40" />
 
-4. You can Click the songs on Friends Playing History, it will play the song...
+
+### 4. Friends Playing History (Opens After clicking on any Friend's Profile)
+<img width="2559" height="1389" alt="image-2" src="https://github.com/user-attachments/assets/b32eb68a-7f42-448a-a8f3-1dfd2e864e30" />
+
+
+### 5. You can Click the songs on Friends Playing History, it will play the song...
 
 ## What it does
 
