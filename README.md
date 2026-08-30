@@ -53,6 +53,7 @@ The server config (database, ports, fetch interval) lives in `.env`; the Spotify
 
 | Method | Path | Description |
 | ------ | ---- | ----------- |
+| GET    | `/`             | Basic info + endpoint list |
 | POST   | `/ping`          | Health ping used by clients |
 | POST   | `/spotify-data`  | Manual feed of friend data (older extension path) |
 | GET    | `/activity`      | Latest activity across all friends |
