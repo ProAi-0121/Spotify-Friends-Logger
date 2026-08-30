@@ -541,7 +541,7 @@ def get_users():
             latest = None
             if history:
                 try:
-                    latest = history[0]
+                    latest = history[-1]
                 except Exception:
                     latest = None
             if not latest:
