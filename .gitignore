@@ -1,0 +1,20 @@
+# Local / private configuration
+.env
+backup/
+backups/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+
+# Logs & local data
+logs/
+*.log
+*.jsonl
+
+# Build artifacts
+dist/
+build/
