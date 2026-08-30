@@ -14,10 +14,9 @@ from `Documents/Spotify Friend Tracker/logs.txt` if you can.
 3. Run a syntax check on the Python files you touched:
 
    ```bash
-   python -m py_compile main.py live_notifications.py
+   python -m py_compile main.py
    ```
 
 4. Open a PR with a short description of what and why.
 
-The main things that matter: don't break the existing fetch loop, don't commit local
-config (`.env`, `config.json`), and keep `backup/` out of PRs.
+The main things that matter: don't break anything....
