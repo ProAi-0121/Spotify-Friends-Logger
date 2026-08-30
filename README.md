@@ -71,7 +71,7 @@ pip install pyinstaller
 Build a **single-file executable with no console window**:
 
 ```bash
-pyinstaller --onefile --noconsole --name Spoti-Friend --icon=icon.ico minidesk.py
+pyinstaller --onefile --noconsole --name Spoti-Friend --icon=icon.ico Spoti-Friend.py
 ```
 
 The executable will be created at:
