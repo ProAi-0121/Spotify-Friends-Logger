@@ -1,4 +1,20 @@
+# Core server
+Flask>=2.2
+pymongo>=4.0
 requests>=2.28.0
 Pillow>=9.0.0
-winotify>=0.7
 python-dotenv>=1.0.0
+pystray>=0.19
+winotify>=0.7
+
+# Optional desktop toaster (live_notifications.py)
+win11toast>=0.6
+
+# Optional browser / token capture (auto-detected at runtime)
+selenium>=4.10
+undetected-chromedriver>=3.5
+selenium-wire>=5.1
+webdriver-manager>=4.0
+
+# Optional live Socket.IO updates
+flask-socketio>=5.3
