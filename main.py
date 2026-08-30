@@ -512,7 +512,7 @@ def get_activity():
         for user in users:
             name = user.get("name", "Unknown")
             history = user.get("history", [])
-            for entry in history[-20:]:
+            for entry in history[:20]:
                 output.append({"user": name, "track": entry.get("track"), "track_uri": entry.get("track_uri"), "image": entry.get("track_image"), "artist": entry.get("artist"), "artist_uri": entry.get("artist_uri"), "album": entry.get("album"), "album_uri": entry.get("album_uri"), "context": entry.get("context"), "played_at": entry.get("played_at"), "timestamp": entry.get("timestamp")})
         output.sort(key=lambda x: x.get("timestamp", 0), reverse=True)
         return cors(jsonify(output[:100]))
