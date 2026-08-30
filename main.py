@@ -1563,15 +1563,13 @@ def background_fetch_loop():
             print('[Spotify] ⚠️ loop fetch error:', e)
             # on errors in loop, sleep and continue
             time.sleep(5)
-        # randomized interval between fetches to look more natural
+        # randomized interval around the configured value to look more natural
         try:
-            sleep_time = random.randint(50, 80)
+            cfg = load_config()
+            interval = int(cfg.get('activity_interval', ACTIVITY_INTERVAL) or ACTIVITY_INTERVAL)
         except Exception:
-            try:
-                cfg = load_config()
-                sleep_time = int(cfg.get('activity_interval', ACTIVITY_INTERVAL) or ACTIVITY_INTERVAL)
-            except Exception:
-                sleep_time = ACTIVITY_INTERVAL
+            interval = ACTIVITY_INTERVAL
+        sleep_time = max(20, interval + random.randint(-10, 20))
         try:
             print(f"[Spotify] Next fetch in {sleep_time}s")
         except Exception:
