@@ -4,6 +4,19 @@ A small Flask service that tracks what your Spotify friends are listening to. It
 
 It ships with a companion desktop script (`live_notifications.py`) that turns new activity into Windows toasts.
 
+## Images/Features (spicetify Extension)
+
+1. Button near the Search Bar
+![alt text](image.png)
+
+2. Friends Menu (Opens after clicking on the button)
+![alt text](image-1.png)
+
+3. Friends Playing History (Opens After clicking on any Friend's Profile)
+![alt text](image-2.png)
+
+4. You can Click the songs on Friends Playing History, it will play the song...
+
 ## What it does
 
 - Logs in to Spotify using a real Chrome session (undetected-chromedriver) so the app can reuse your account cookies.
