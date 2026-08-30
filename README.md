@@ -2,7 +2,6 @@
 
 A small Flask service that tracks what your Spotify friends are listening to. It signs into Spotify in a real browser, captures the auth/client tokens Spotify uses for its internal web API, and polls the private `presence-view/v1/buddylist` endpoint. Each friend's activity is then stored in MongoDB.
 
-It ships with a companion desktop script (`live_notifications.py`) that turns new activity into Windows toasts.
 
 ## Images/Features (spicetify Extension)
 
@@ -102,6 +101,52 @@ without installing Python or the project dependencies.
 > **Note:** `--noconsole` hides the terminal window. If you are debugging
 > startup or runtime errors, temporarily remove `--noconsole` so errors are
 > visible in the console.
+
+## HOW TO ADD EXTENSION TO SPICETIFY SPOTIFY
+
+**Spicetify** is an open-source tool that lets you customize the Spotify desktop app with themes, extensions, apps, and more.
+
+👉 Install Spicetify: [https://spicetify.app/](https://spicetify.app/)
+
+### `ShowActivity.js` is the extension
+
+1. Install Spicetify and make sure Spotify is installed.
+
+2. Open the Spicetify Extensions folder:
+
+```text
+%appdata%\spicetify\Extensions
+```
+
+> You can press `Win + R` and paste the path above.
+
+3. Copy **`ShowActivity.js`** into that folder:
+
+```text
+%appdata%\spicetify\Extensions\ShowActivity.js
+```
+
+4. Enable the extension:
+
+```powershell
+spicetify config extensions ShowActivity.js
+```
+
+5. Apply the changes:
+
+```powershell
+spicetify apply
+```
+
+6. Restart Spotify. 🎵
+
+### Remove the Extension
+
+```powershell
+spicetify config extensions ShowActivity.js-
+spicetify apply
+```
+
 
 
 ## Endpoints
