@@ -491,6 +491,15 @@ def ping():
     return cors(jsonify(ok=True))
 
 
+@app.route("/", methods=["GET"])
+def index():
+    return cors(jsonify({
+        "name": "Spotify Friend Logger",
+        "status": "ok",
+        "endpoints": ["/ping", "/spotify-data", "/activity", "/users", "/current", "/health", "/stats"]
+    }))
+
+
 @app.route("/spotify-data", methods=["POST", "OPTIONS"])
 def spotify_data():
     # kept for compatibility; forwards to internal processor
