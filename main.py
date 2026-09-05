@@ -598,6 +598,14 @@ def get_user_history(user_uri):
     try:
         limit = int(request.args.get("limit", 20))
         offset = int(request.args.get("offset", 0))
+        # normalize incoming identifier: frontend sometimes sends raw
+        # "spotify:user:<id>" URIs, percent-encoded values, or empty strings
+        from urllib.parse import unquote
+        key = unquote(user_uri or '').strip()
+        if key.lower().startswith('spotify:user:'):
+            key = key[len('spotify:user:'):]
+        if not key:
+            return cors(jsonify([]))
         # prefer lookup by user_uri; fall back to display name if user_uri missing
         user = None
         if friends_collection is not None:
@@ -882,8 +890,17 @@ def create_browser(cfg):
         print('[Spotify] ⚠️ Failed to import/create selenium Options; traceback:')
         traceback.print_exc()
         return None
-    # Stealth/realistic options
-    ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+    # Stealth/realistic options: use the REAL detected Chrome version in the UA.
+    # A mismatched UA (e.g. claiming 114 while actual is 109) is a bot-detection flag.
+    detected_major = None
+    try:
+        detected_major = detect_chrome_major()
+    except Exception:
+        detected_major = None
+    if detected_major:
+        ua = f"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/{detected_major}.0.0.0 Safari/537.36"
+    else:
+        ua = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36"
     opts.add_argument(f'--user-agent={ua}')
     if cfg.get('headless'):
         opts.add_argument('--headless=new')
@@ -1285,11 +1302,30 @@ def start_browser_and_capture_tokens(cfg, timeout=30):
             cfg['client_captured_at'] = now
             saved = True
 
-        # login status
+        # login status — CRITICAL: if the web player is logged out, the captured
+        # tokens belong to an ANONYMOUS session and presence-view will reject
+        # them with 400. Abort early with a clear message instead of chasing 400s.
         logged = is_logged_in(driver)
         cfg['spotify_logged_in'] = bool(logged)
         cfg['last_login_check'] = time.time()
         save_config(cfg)
+
+        if not logged:
+            print('[Spotify] ❌ Web player is NOT logged in (sp_dc cookies expired or invalid).')
+            print('[Spotify] 👉 Update sp_dc in config.json or log into Spotify in the browser.')
+            try:
+                NOTIFICATION_QUEUE.put(('Spotify Friend Tracker', 'Spotify not logged in. Update sp_dc in config.json.'))
+            except Exception:
+                pass
+            try:
+                driver.quit()
+            except Exception:
+                pass
+            try:
+                _browser_driver = None
+            except Exception:
+                pass
+            return 0, '', cfg
 
         # If we successfully captured tokens, reset any previous failed-refresh cooldown
         if saved:
@@ -1331,11 +1367,22 @@ fetch(url, {method: 'GET', headers: headers, credentials: 'include'})
     callback(JSON.stringify({status: 0, text: '', error: String(err)}));
 });
 """
-            headers = {}
+            headers = {
+                'accept': 'application/json',
+                'app-platform': 'WebPlayer',
+                'origin': 'https://open.spotify.com',
+                'referer': 'https://open.spotify.com/'
+            }
             if cfg.get('auth_token'):
                 headers['Authorization'] = f"Bearer {cfg.get('auth_token')}"
             if cfg.get('client_token'):
                 headers['client-token'] = cfg.get('client_token')
+            # execute_async_script requires an explicit script timeout
+            # (the default is 0ms, which makes the async callback fail)
+            try:
+                driver.set_script_timeout(30)
+            except Exception:
+                pass
             raw = None
             try:
                 raw = driver.execute_async_script(fetch_script, SPOTIFY_BUDDYLIST_URL, headers)
@@ -1431,8 +1478,8 @@ def fetch_buddylist_and_store(cfg, driver=None):
             print(f"[Spotify] Fetch attempt {attempt} status: {status_code}")
             if status_code == 200:
                 break
-            if status_code in (401, 403):
-                # authentication issue -> stop retrying and refresh tokens
+            if status_code in (400, 401, 403):
+                # auth/client-token problems are not transient — no point retrying
                 break
         except Exception as e:
             print('[Spotify] ⚠️ fetch error attempt', attempt, e)
@@ -1448,14 +1495,13 @@ def fetch_buddylist_and_store(cfg, driver=None):
     except Exception:
         pass
 
-    # Save raw response always
-    try:
-        save_raw_friends(response_text or '')
-    except Exception:
-        pass
-
-    # If successful, parse and process
+    # Only overwrite the raw file on SUCCESS — previously a failed request
+    # wrote '' over the last good buddylist, wiping /current data.
     if status_code == 200 and response_text:
+        try:
+            save_raw_friends(response_text)
+        except Exception:
+            pass
         try:
             data = json.loads(response_text or '{}')
         except Exception as e:
@@ -1514,10 +1560,11 @@ def fetch_buddylist_and_store(cfg, driver=None):
         print('[Spotify] Buddylist Response Snippet:', (fetched_text or '')[:300])
     except Exception:
         pass
-    try:
-        save_raw_friends(fetched_text or '')
-    except Exception:
-        pass
+    if status == 200 and fetched_text:
+        try:
+            save_raw_friends(fetched_text)
+        except Exception:
+            pass
 
     if status == 200 and fetched_text:
         try:
