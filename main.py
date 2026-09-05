@@ -42,17 +42,20 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017")
-# Optional Atlas fallback used only when the local Mongo connection fails.
-MONGO_URI_ATLAS = os.getenv("MONGO_URI_ATLAS", "")
-DB_NAME = os.getenv("MONGO_DB_NAME", "spotify_friends")
-COLLECTION_NAME = os.getenv("MONGO_COLLECTION", "friends_activity")
+# ================= CONFIGURATION =================
+MONGO_URI = "mongodb://localhost:27017"
+DB_NAME = "spotify_friends"
+COLLECTION_NAME = "friends_activity"
 
-FLASK_HOST = os.getenv("FLASK_HOST", "0.0.0.0")
-FLASK_PORT = int(os.getenv("FLASK_PORT", "5000"))
+SPOTIFY_GROUP_NAME = "Spoti-Friend-Logger"
+API_PORT = 3939
+WHATSAPP_API_URL = (f"http://localhost:{API_PORT}/spotify")
+
+FLASK_HOST = "0.0.0.0"
+FLASK_PORT = 6767
 
 # default interval (seconds) if config missing
-ACTIVITY_INTERVAL = int(os.getenv("ACTIVITY_INTERVAL", "60"))
+ACTIVITY_INTERVAL = 60
 
 # Spotify internal endpoint used to read friend activity
 SPOTIFY_BUDDYLIST_URL = "https://guc-spclient.spotify.com/presence-view/v1/buddylist"
